@@ -1,0 +1,4 @@
+.venv/
+.pytets*
+*.egg-info
+.python-version
