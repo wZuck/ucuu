@@ -1,0 +1,42 @@
+[project]
+name = "ucuu"
+version = "0.1.0"
+description = "A lightweight and extensible Python utility toolkit for productivity and automation."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+    "rich>=14.0.0",
+    "black>=24.0.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+authors = [
+    { name = "wZuck", email = "wzuck.wang@gmail.com" }
+]
+[project.urls]
+homepage = "https://wzuck.github.io/ucuu/"
+repository = "https://github.com/wZuck/ucuu"
+documentation = "https://github.com/wZuck/ucuu"
+pypi = "https://pypi.org/project/ucuu/"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pre-commit]
+
+[project.optional-dependencies]
+docs = [
+    "ghp-import>=2.1.0"
+]
+publish = [
+    "build>=1.0.0",
+    "twine>=4.0.0"
+]
