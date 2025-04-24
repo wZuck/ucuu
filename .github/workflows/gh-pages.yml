@@ -1,0 +1,33 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+          
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+      
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
