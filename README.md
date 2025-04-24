@@ -1,8 +1,7 @@
 # You Can You Up (UCUU) 🚀
 --------
-[![Deploy GitHub Pages](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml/badge.svg?branch=master)](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml)
 
-
+[![Tests](https://github.com/wZuck/ucuu/actions/workflows/python-app.yml/badge.svg)](https://github.com/wZuck/ucuu/actions/workflows/python-app.yml) [![GitHub Pages](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml/badge.svg?branch=master)](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml) [![PyPI Package](https://github.com/wZuck/ucuu/actions/workflows/publish.yml/badge.svg)](https://github.com/wZuck/ucuu/actions/workflows/publish.yml)
 > **⚠️ Important:**  
 > The majority of the code in this repository is generated using AI coding tools such as GitHub Copilot (GPT-4o) and TRAE (Doubao 1.5 Pro).  
 
