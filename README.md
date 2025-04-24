@@ -85,7 +85,7 @@ def print_ucuu_hello(ending_words=None, *args, **kwargs):
 
 ## 4. License 📄
 
-[MIT License](./LICENSE)
+[License](./LICENSE)
 
 ---
 
