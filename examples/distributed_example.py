@@ -16,7 +16,6 @@ except ImportError:
 
 if TORCH_AVAILABLE:
     from ucuu.decorator import ucuu
-    from ucuu.distributed import initialize_cpu_group
 
     # Example 1: Basic remote execution
     print("=" * 60)
