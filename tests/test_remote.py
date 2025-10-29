@@ -116,6 +116,38 @@ class TestRemoteExecution:
         # Adds 1, multiplies by 2, then multiplies by 10: ((5 + 1) * 2) * 10 = 120
         assert result == 120
 
+    def test_remote_without_peer_rank(self):
+        """Test remote execution without specifying peer_rank (uses current rank)."""
+        from ucuu.decorator import ucuu
+
+        @ucuu("package_utils.print_ucuu_hello", remote=True)
+        def test_func(x):
+            return x * 2
+
+        # Should work without peer_rank specified
+        result = test_func(5)
+        assert result == 10
+
+    def test_remote_with_optional_peer_rank(self):
+        """Test that peer_rank is truly optional."""
+        from ucuu.decorator import ucuu
+
+        # Test without peer_rank
+        @ucuu("package_utils.print_ucuu_hello", remote=True)
+        def test_func_no_rank(x):
+            return x * 2
+
+        # Test with peer_rank
+        @ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+        def test_func_with_rank(x):
+            return x * 2
+
+        # Both should work
+        result1 = test_func_no_rank(5)
+        result2 = test_func_with_rank(5)
+        assert result1 == 10
+        assert result2 == 10
+
 
 @pytest.mark.skipif(TORCH_AVAILABLE, reason="Test for PyTorch not available scenario")
 class TestRemoteExecutionWithoutPyTorch:
@@ -127,7 +159,7 @@ class TestRemoteExecutionWithoutPyTorch:
         """Test that remote decorator falls back gracefully without PyTorch."""
         from ucuu.decorator import ucuu
 
-        @ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+        @ucuu("package_utils.print_ucuu_hello", remote=True)
         def test_func(x):
             return x * 2
 
@@ -145,7 +177,7 @@ class TestRemoteExecutionBasic:
         """Test basic remote decorator functionality."""
         from ucuu.decorator import ucuu
 
-        @ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+        @ucuu("package_utils.print_ucuu_hello", remote=True)
         def test_func(x):
             return x * 2
 

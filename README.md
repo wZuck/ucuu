@@ -4,6 +4,8 @@
 [![Tests](https://github.com/wZuck/ucuu/actions/workflows/python-app.yml/badge.svg)](https://github.com/wZuck/ucuu/actions/workflows/python-app.yml) [![GitHub Pages](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml/badge.svg?branch=master)](https://github.com/wZuck/ucuu/actions/workflows/gh-pages.yml) [![PyPI Package](https://github.com/wZuck/ucuu/actions/workflows/publish.yml/badge.svg)](https://github.com/wZuck/ucuu/actions/workflows/publish.yml)
 > **⚠️ Important:**  
 > The majority of the code in this repository is generated using AI coding tools such as GitHub Copilot (GPT-4o) and TRAE (Doubao 1.5 Pro).  
+> 
+> **Distributed features contributor:** GitHub Copilot (Claude 3.7 Sonnet)  
 
 ## 1. Brief Introduction
 
@@ -110,9 +112,11 @@ comm_group = initialize_cpu_group(
 )
 
 # Use remote decorator to execute on peer
-@ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+# peer_rank is optional - if not specified, uses current rank
+# In typical scenarios, both peers have matching ranks
+@ucuu("package_utils.print_ucuu_hello", remote=True)
 def compute_on_peer(x):
-    """This function will execute on the peer node (rank 1)"""
+    """This function will execute on the peer node with the same rank"""
     return x * 2
 
 # Tensors are automatically moved to CPU for communication
@@ -144,7 +148,6 @@ def custom_postprocess(output):
 @ucuu(
     "package_utils.print_ucuu_hello",
     remote=True,
-    peer_rank=1,
     custom_preprocess=custom_preprocess,
     custom_postprocess=custom_postprocess
 )
@@ -207,7 +210,7 @@ The `@ucuu` decorator supports a `remote` attribute for executing functions on r
 
 #### Parameters:
 - `remote` (bool): Enable remote execution (default: False)
-- `peer_rank` (int): Rank of the peer to execute on (required if remote=True)
+- `peer_rank` (int, optional): Rank of the peer to execute on. If not specified, uses the current rank (suitable for scenarios where both peers have matching ranks)
 - `custom_preprocess` (Callable): Function to preprocess inputs before sending
 - `custom_postprocess` (Callable): Function to postprocess outputs after receiving
 
@@ -215,6 +218,9 @@ The `@ucuu` decorator supports a `remote` attribute for executing functions on r
 - Input tensors are automatically converted to CPU before transmission
 - Output tensors are automatically converted back to the original device
 - Custom preprocessing/postprocessing can be applied at each stage
+
+#### Note:
+In typical distributed scenarios, peer nodes have matching ranks (e.g., rank 0 on node A communicates with rank 0 on node B). Therefore, `peer_rank` can usually be omitted and will default to the current rank.
 
 ---
 

@@ -23,7 +23,7 @@ def _execute_remote(
         func: The function to execute remotely.
         args: Positional arguments for the function.
         kwargs: Keyword arguments for the function.
-        peer_rank: Rank of the peer to execute on.
+        peer_rank: Rank of the peer to execute on. If None, uses current rank.
         custom_preprocess: Optional preprocessing function for inputs.
         custom_postprocess: Optional postprocessing function for outputs.
 
@@ -45,12 +45,10 @@ def _execute_remote(
             # Fall back to local execution
             return func(*args, **kwargs)
 
+        # Use current rank as peer_rank if not specified
         if peer_rank is None:
-            logger.error(
-                "[bold red]Remote Execution Error[/bold red]\n"
-                "peer_rank must be specified when remote=True"
-            )
-            return func(*args, **kwargs)
+            peer_rank = comm_group.get_rank()
+            logger.info(f"[cyan]Using current rank {peer_rank} as peer_rank[/cyan]")
 
         # Prepare arguments for remote execution
         sig = inspect.signature(func)
@@ -166,7 +164,8 @@ def ucuu(
     Args:
         proxy_func_name: Module path and function name of the proxy function (e.g., "module.function").
         remote: If True, execute the function on a remote peer using distributed communication.
-        peer_rank: Rank of the peer to execute on (required if remote=True).
+        peer_rank: Rank of the peer to execute on. If None, uses the current rank (default behavior
+                   in scenarios where peers have matching ranks).
         custom_preprocess: Optional function to preprocess inputs before remote execution.
                           Should accept the input_dict and return modified input_dict.
         custom_postprocess: Optional function to postprocess outputs after remote execution.

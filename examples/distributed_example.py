@@ -32,7 +32,7 @@ if TORCH_AVAILABLE:
     #     rank=0  # or 1 for the peer node
     # )
 
-    @ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+    @ucuu("package_utils.print_ucuu_hello", remote=True)
     def compute_remotely(x):
         """This function will execute on the peer node"""
         return x * 2
@@ -46,7 +46,7 @@ if TORCH_AVAILABLE:
     print("Example 2: Remote Execution with Tensors")
     print("=" * 60)
 
-    @ucuu("package_utils.print_ucuu_hello", remote=True, peer_rank=1)
+    @ucuu("package_utils.print_ucuu_hello", remote=True)
     def process_tensor(x):
         """Process tensor on remote peer"""
         return x * 2 + 1
@@ -77,7 +77,6 @@ if TORCH_AVAILABLE:
     @ucuu(
         "package_utils.print_ucuu_hello",
         remote=True,
-        peer_rank=1,
         custom_preprocess=normalize_input,
         custom_postprocess=scale_output,
     )
