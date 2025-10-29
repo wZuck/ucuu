@@ -3,7 +3,6 @@ Tests for distributed communication functionality.
 """
 
 import pytest
-import sys
 import os
 
 # Check if PyTorch is available
