@@ -119,4 +119,4 @@ class TestDistributedWithoutPyTorch:
 
         # Should raise ImportError when trying to create the group
         with pytest.raises(ImportError, match="PyTorch is required"):
-            comm_group = CPUCommunicationGroup()
+            CPUCommunicationGroup()
