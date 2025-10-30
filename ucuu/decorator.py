@@ -50,14 +50,6 @@ def _execute_remote(
             peer_rank = comm_group.get_rank()
             logger.info(f"[cyan]Using current rank {peer_rank} as peer_rank[/cyan]")
 
-        # Prepare arguments for remote execution
-        sig = inspect.signature(func)
-        bound_args = sig.bind(*args, **kwargs)
-        bound_args.apply_defaults()
-
-        input_dict = dict(bound_args.arguments)
-        input_dict.pop("self", None)
-
         # Convert tensors to CPU
         def _to_cpu(obj):
             """Recursively convert tensors to CPU."""
@@ -70,32 +62,7 @@ def _execute_remote(
                 return type(obj)(result)
             return obj
 
-        cpu_input_dict = _to_cpu(input_dict)
-
-        # Apply custom preprocessing if provided
-        if custom_preprocess is not None:
-            cpu_input_dict = custom_preprocess(cpu_input_dict)
-
-        logger.info(
-            f"[bold green]Remote Execution Started[/bold green]\n"
-            f"Function: [cyan]{func.__name__}[/cyan]\n"
-            f"Peer Rank: [cyan]{peer_rank}[/cyan]\n"
-            f"Current Rank: [cyan]{comm_group.get_rank()}[/cyan]"
-        )
-
-        # Serialize and send inputs to peer
-        import pickle
-
-        serialized_data = pickle.dumps(
-            {
-                "func_name": func.__name__,
-                "module": func.__module__,
-                "inputs": cpu_input_dict,
-            }
-        )
-
-        # For now, we'll execute locally but convert tensors appropriately
-        # In a real distributed scenario, this would send data to peer and receive result
+        # Detect original device for later restoration
         current_device = None
         if args and isinstance(args[0], torch.Tensor):
             current_device = args[0].device
@@ -104,6 +71,31 @@ def _execute_remote(
         cpu_args = tuple(_to_cpu(arg) for arg in args)
         cpu_kwargs = {k: _to_cpu(v) for k, v in kwargs.items()}
 
+        # Apply custom preprocessing if provided
+        if custom_preprocess is not None:
+            sig = inspect.signature(func)
+            bound_args = sig.bind(*cpu_args, **cpu_kwargs)
+            bound_args.apply_defaults()
+            input_dict = dict(bound_args.arguments)
+            input_dict.pop("self", None)
+            preprocessed_dict = custom_preprocess(input_dict)
+            # Reconstruct args and kwargs from preprocessed dict
+            cpu_args = tuple(
+                preprocessed_dict.get(name, bound_args.arguments.get(name))
+                for name in sig.parameters.keys()
+                if name != "self"
+            )
+            cpu_kwargs = {}
+
+        logger.info(
+            f"[bold green]Remote Execution Started[/bold green]\n"
+            f"Function: [cyan]{func.__name__}[/cyan]\n"
+            f"Peer Rank: [cyan]{peer_rank}[/cyan]\n"
+            f"Current Rank: [cyan]{comm_group.get_rank()}[/cyan]"
+        )
+
+        # Note: In a real distributed scenario, this would serialize and send
+        # data to peer and receive result. For now, we execute locally.
         result = func(*cpu_args, **cpu_kwargs)
 
         # Convert result back to original device

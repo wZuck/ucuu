@@ -7,7 +7,8 @@ import os
 
 # Check if PyTorch is available
 try:
-    import torch
+    import torch  # noqa: F401
+    import torch.distributed as dist  # noqa: F401
 
     TORCH_AVAILABLE = True
 except ImportError:

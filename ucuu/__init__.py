@@ -15,4 +15,5 @@ try:
 
     __all__.append("distributed")
 except ImportError:
+    # Optional dependency: ignore if PyTorch is not available
     pass
