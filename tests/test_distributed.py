@@ -8,7 +8,6 @@ import os
 # Check if PyTorch is available
 try:
     import torch
-    import torch.distributed as dist
 
     TORCH_AVAILABLE = True
 except ImportError:
