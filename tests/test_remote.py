@@ -3,8 +3,6 @@ Tests for remote execution functionality in the decorator.
 """
 
 import pytest
-import sys
-
 # Check if PyTorch is available
 try:
     import torch
