@@ -3,3 +3,9 @@
 *.egg-info
 .python-version/
 .vscode/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+dist/
+build/
